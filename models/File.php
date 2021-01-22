@@ -88,11 +88,10 @@ class File extends Model
      */
     private function convertPdfToPng($path, $namePdf)
     {
-        mkdir($path . "/images");
+        mkdir("$path/images");
 
         // количество листов в pdf-файле
-        $pdf_content = file_get_contents("$path/$namePdf");
-        $count = preg_match_all("/\/Page\W/", $pdf_content, $matches);
+        $count = $this->checkCountPage("$path/$namePdf");
 
         // php-imagick
         $image = new \Imagick();
@@ -112,5 +111,33 @@ class File extends Model
         $image->destroy();
 
         return $sortedImagesList;
+    }
+
+    /**
+     * Определение количества страниц в pdf-файле
+     *
+     * @param string $path путь к pdf-файлу
+     * @return integer количество
+     */
+    private function checkCountPage($path)
+    {
+        $f = fopen($path, "r");
+        $count = 0;
+
+        while(!feof($f)) {
+            $line = fgets($f, 255);
+
+            if (preg_match('/\/Count [0-9]+/', $line, $matches)) {
+                preg_match('/[0-9]+/', $matches[0], $matches2);
+
+                if ($count < $matches2[0]) {
+                    $count = $matches2[0];
+                }
+            } 
+        }
+
+        fclose($f);
+
+        return $count;
     }
 }

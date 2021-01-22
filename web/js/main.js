@@ -25,6 +25,8 @@ $(document).on('click', '#send', function (e) {
                 $.pjax.reload('#pjaxTableLoads')
             },
             error ({ status, responseJSON }) {
+                statusText.innerText = 'Ошибка'
+
                 switch (status) {
                     case 400:
                         alert(JSON.parse(responseJSON.message).join(', '))

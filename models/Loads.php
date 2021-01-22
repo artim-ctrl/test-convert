@@ -45,7 +45,7 @@ class Loads extends \yii\db\ActiveRecord
         return [
             [['path', 'images_list'], 'required'],
             [['deleted'], 'boolean'],
-            [['path', 'images_list', 'pdf_file', 'pp_file'], 'string', 'max' => 255],
+            [['path', 'pdf_file', 'pp_file'], 'string', 'max' => 255],
         ];
     }
 
