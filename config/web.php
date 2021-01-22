@@ -53,6 +53,11 @@ $config = [
                 '<action:\w+>' => 'site/<action>'
             ],
         ],
+
+        // архиватор
+        'zipper' => [
+            'class' => 'Victor78\Zipper\Zipper',
+        ],
     ],
     'params' => $params,
 ];

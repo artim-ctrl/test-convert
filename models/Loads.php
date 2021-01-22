@@ -26,6 +26,9 @@ class Loads extends \yii\db\ActiveRecord
         return 'loads';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
@@ -39,9 +42,7 @@ class Loads extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['path', 'images_list', 'created_at', 'updated_at'], 'required'],
-            [['created_at', 'updated_at'], 'default', 'value' => null],
-            [['created_at', 'updated_at'], 'integer'],
+            [['path', 'images_list'], 'required'],
             [['deleted'], 'boolean'],
             [['path', 'images_list', 'pdf_file'], 'string', 'max' => 255],
         ];
@@ -61,5 +62,16 @@ class Loads extends \yii\db\ActiveRecord
             'updated_at' => 'Время изменения',
             'deleted' => 'Удален',
         ];
+    }
+
+    /**
+     * Удаляем текущую загрузку
+     *
+     */
+    public function remove()
+    {
+        $this->deleted = true;
+
+        $this->save();
     }
 }
