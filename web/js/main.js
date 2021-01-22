@@ -1,12 +1,17 @@
 /* @var form форма с id="form" */
+/* @var statusText span с id="statusText" */
 
 // загружаем файл на сервер
-$(document).on('click', '#send', function () {
+$(document).on('click', '#send', function (e) {
+    e.preventDefault()
+
     let formData = new FormData(form)
 
     if (form.elements[0].files.length === 0) {
         alert('Загрузите файл')
     } else {
+        statusText.innerText = 'Подождите, идет загрузка'
+
         $.ajax({
             url: '/convert',
             type: 'post',
@@ -15,6 +20,8 @@ $(document).on('click', '#send', function () {
             cache: false,
             processData: false,
             success () {
+                statusText.innerText = 'Загружено'
+
                 $.pjax.reload('#pjaxTableLoads')
             },
             error ({ status, responseJSON }) {
@@ -31,6 +38,7 @@ $(document).on('click', '#send', function () {
     }
 })
 
+// удаляем загрузку
 function remove(id) {
     $.ajax({
         url: `/delete?id=${id}`,

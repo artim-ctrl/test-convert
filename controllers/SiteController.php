@@ -91,16 +91,35 @@ class SiteController extends Controller
     }
 
     /**
-     * Получаем оригинальный pdf-файл
+     * Получаем pdf-файл
      *
      * @param integer $id идентификатор записи
      * @throws HttpException 404 не нашли запись/ файл
      */
-    public function actionOriginal($id)
+    public function actionPdf($id)
     {
         if ($load = Loads::findOne($id)) {
             if (file_exists("$load->path/$load->pdf_file")) {
                 Yii::$app->response->sendFile("$load->path/$load->pdf_file");
+            } else {
+                throw new HttpException(404, 'Такого файла не существует.');
+            }
+        } else {
+            throw new HttpException(404, 'Такой записи не существует.');
+        }
+    }
+
+    /**
+     * Получаем PowerPoint-файл
+     *
+     * @param integer $id идентификатор записи
+     * @throws HttpException 404 не нашли запись/ файл
+     */
+    public function actionPp($id)
+    {
+        if ($load = Loads::findOne($id)) {
+            if (file_exists("$load->path/$load->pp_file")) {
+                Yii::$app->response->sendFile("$load->path/$load->pp_file");
             } else {
                 throw new HttpException(404, 'Такого файла не существует.');
             }

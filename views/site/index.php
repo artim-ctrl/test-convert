@@ -15,7 +15,9 @@ $this->registerJsFile('js/main.js', ['depends' => [\yii\web\JqueryAsset::classna
     <form id="form" action="">
         <input type="file" name="File[file]">
 
-        <button id="send">send</button>
+        <button id="send" type="button">send</button>
+
+        <span id="statusText"></span>
     </form>
 
     <? Pjax::begin([
@@ -28,12 +30,26 @@ $this->registerJsFile('js/main.js', ['depends' => [\yii\web\JqueryAsset::classna
 
                 [
                     'format' => 'raw',
-                    'attribute' => 'path',
+                    'attribute' => 'pdf_file',
                     'value' => function ($model) {
-                        return Html::a('Скачать исходный файл', "/original?id=$model->id", [
+                        return Html::a('Скачать pdf-файл', "/pdf?id=$model->id", [
                             'target' => '_blank',
                             'data-pjax' => '0',
                         ]);
+                    }
+                ],
+                [
+                    'format' => 'raw',
+                    'attribute' => 'pp_file',
+                    'value' => function ($model) {
+                        if (!!$model->pp_file) {
+                            return Html::a('Скачать powerpoint-файл', "/pp?id=$model->id", [
+                                'target' => '_blank',
+                                'data-pjax' => '0',
+                            ]);
+                        } else {
+                            return 'Файла нет';
+                        }
                     }
                 ],
                 [

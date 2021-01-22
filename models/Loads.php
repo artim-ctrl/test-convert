@@ -11,7 +11,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id Код
  * @property string $path Путь к загрузке
  * @property string $images_list Упорядоченный список изображений
- * @property string|null $pdf_file Название Pdf-файла
+ * @property string $pdf_file Название Pdf-файла
+ * @property string|null $pp_file Название PowerPoint-файла
  * @property int $created_at Время создания
  * @property int $updated_at Время изменения
  * @property bool $deleted Удален
@@ -44,7 +45,7 @@ class Loads extends \yii\db\ActiveRecord
         return [
             [['path', 'images_list'], 'required'],
             [['deleted'], 'boolean'],
-            [['path', 'images_list', 'pdf_file'], 'string', 'max' => 255],
+            [['path', 'images_list', 'pdf_file', 'pp_file'], 'string', 'max' => 255],
         ];
     }
 
@@ -58,6 +59,7 @@ class Loads extends \yii\db\ActiveRecord
             'path' => 'Путь к загрузке',
             'images_list' => 'Упорядоченный список изображений',
             'pdf_file' => 'Название Pdf-файла',
+            'pp_file' => 'Название PowerPoint-файла',
             'created_at' => 'Время создания',
             'updated_at' => 'Время изменения',
             'deleted' => 'Удален',

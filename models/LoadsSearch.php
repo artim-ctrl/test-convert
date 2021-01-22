@@ -16,9 +16,7 @@ class LoadsSearch extends Loads
      */
     public function rules()
     {
-        return [
-            [['path', 'images_list', 'pdf_file'], 'safe'],
-        ];
+        return [];
     }
 
     /**

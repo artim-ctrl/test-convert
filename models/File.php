@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\web\HttpException;
 use yii\helpers\Json;
+use NcJoes\OfficeConverter\OfficeConverter;
 
 /**
  * File - загружаемый Pdf-файл
@@ -19,14 +20,14 @@ class File extends Model
     public function rules()
     {
         return [
-            [['file'], 'file', 'extensions' => 'pdf'],
+            [['file'], 'file', 'extensions' => 'pdf, ppt, pptx'],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'file' => 'Pdf-файл',
+            'file' => 'Загружаемый файл',
         ];
     }
 
@@ -43,19 +44,31 @@ class File extends Model
 
         if ($this->validate()) {
             $path = Yii::getAlias('@app') . "/file_loads/" . Yii::$app->security->generateRandomString(32) . time();
-            $name = $this->file->name;
+            $name = $this->file->baseName;
+            $extension = $this->file->extension;
 
             mkdir($path, 0777);
 
-            $this->file->saveAs($path . "/$name");
+            $this->file->saveAs("$path/$name.$extension");
 
-            $images = json::encode(self::convert($path, $name));
+            // если загрузили не pdf - конвертируем в pdf, сохраняя оба файла
+            if ($extension !== 'pdf') {
+                $converter = new OfficeConverter("$path/$name.$extension");
+    
+                $converter->convertTo("$name.pdf");
+            }
+
+            $images = json::encode(self::convertPdfToPng($path, "$name.pdf"));
 
             $load = new Loads();
 
             $load->path = $path;
             $load->images_list = $images;
-            $load->pdf_file = $name;
+            $load->pdf_file = "$name.pdf";
+
+            if ($extension !== 'pdf') {
+                $load->pp_file = "$name.$extension";
+            }
 
             if ($load->validate()) {
                 $load->save();
@@ -73,7 +86,7 @@ class File extends Model
      * @throws HttpException 400 ошибки валидации
      * @return Array упорядоченный массив названий файлов изображений
      */
-    private function convert($path, $namePdf)
+    private function convertPdfToPng($path, $namePdf)
     {
         mkdir($path . "/images");
 
